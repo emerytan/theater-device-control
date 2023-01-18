@@ -8,8 +8,8 @@ const io = new Server(server)
 const ipcLocal = new EventEmitter()
 
 
-var connections = []
-var projectorState = {}
+let connections = []
+let projectorState = {}
 const projectors = [
 	'10.208.79.66',
 	'10.208.79.48',
@@ -25,12 +25,12 @@ app.get('./', function (req, res) {
 
 server.listen(3000, () => {
 	console.log('Barco control webApp listening on port 3000')
+	import('./devices/projector.js')
 })
 
 
 io.on('connection', (socket) => {
 	connections.push(socket)
-	import('./devices/projector.js')
 	socket.emit('projectors', projectors)
 	console.log(`server: number of client connections = ${connections.length}`)
 	
@@ -90,11 +90,6 @@ io.on('connection', (socket) => {
 		})
 	})
 
-	
-	socket.on('change macro', (msg) => {
-		console.log(`macro change request`)
-		console.log(msg)
-	})
 
 	function updatePage(state) {
 		socket.emit('lamp', state.lamp)
