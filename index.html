@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../src/styles/custom.css">
+    <title>CO3 Barco Web Control</title>
+</head>
+<body class="container-fluid">
+    <header class="row">
+        <h1 class="h1 text-center" id="headerText">Barco control</h1>
+    </header>
+    <div id="main" class="container-fluid">
+        <div id="mainContainer" class="row">
+            <div id="sideCont" class="col-4">
+                <div id="ipControls">
+                    <div id="ipContainer" class="col">
+                        <label for="ipaddr" class="text-left">Select a Projector</label>
+                        <select class="form-control" id="ipList">
+                            <option selected>Choose...</option>
+                            <option value="1">10.208.79.50</option>
+                            <option value="2">Dos</option>
+                            <option value="3">Three</option>
+                        </select>
+                        <button id="connect" class="btn btn-dark test" data-action="connect">Connect</button>
+                        <p id="projectorConnected"></p>
+                        <p id="activeMacro"></p>
+                    </div>
+                </div>
+                <div id="macroControls" class="col">
+                    <div id="macroContainer">
+                        <label for="macroList" class="text-left">Select a Macro</label>
+                        <select class="form-control" id="macroList">
+                            <option selected>Choose...</option>
+                        </select>
+                        <button id="selectMacro" class="btn btn-dark test">Apply</button>
+                    </div>
+                </div>
+                
+                <div id="testButtons" class="col">
+                    <div id="dolbyControl">
+                        <div id="dolbyContainer">
+                            <label for="DOLBYSHIT" class="h2">Dolby -- Shit</label>
+                        </div>
+                    </div>
+                    <button id="test1" class="btn btn-dark test">test1</button>
+                    <button id="test2" class="btn btn-dark test">test2</button>
+                    <br>
+                    <br>
+                    <button id="test3" class="btn btn-dark test">test3</button>
+                    <button id="test4" class="btn btn-dark test">test4</button>
+                </div>
+            </div>
+            <div id="mainContainer" class="col-8">
+                <div id="powerControls" class="container-fluid">
+                    <h4>Lamp Controls</h4>
+                    <div id="powerContaier" class="row">
+                        <div id="lampButtons" class="col-6">
+                            <input type="button" id="lampPower" class="btn btn-dark lens" autocomplete="off"
+                                value="toggle" data-action="power" data-command=0 />
+                            <h5>Lamp</h5>
+                        </div>
+                        <div id="dowserButtons" class="col-6">
+                            <input type="button" id="dowser" class="btn btn-dark lens" autocomplete="off" value="toggle"
+                                data-action="dowser" data-command=0 />
+                            <h5>Dowser</h5>
+                        </div>
+                    </div>
+                </div>
+                <div id="lensControls" class="container-fluid">
+                    <h4>Lens Controls</h4>
+                    <div id="zoomFocusContainer" class="row">
+                        <div id="focusButtons" class="col-6">
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Focus Out" id="focusOut"
+                                data-action="focus" data-command="1" />
+                            <h5>Focus</h5>
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Focus In" id="focusIn"
+                                data-action="focus" data-command="0" />
+                        </div>
+                        <div id="zoomButtons" class="col-6">
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Zoom Out" id="zoomOut"
+                                data-action="zoom" data-command="1" />
+                            <h5>Zoom</h5>
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Zoom In" id="zoomIn"
+                                data-action="zoom" data-command="0" />
+                        </div>
+                    </div>
+                </div>
+                <div id="shiftControls" class="container-fluid">
+                    <h4>Image Shift Controls</h4>
+                    <div id="shiftContainer" class="row">
+                        <div id="shiftUpContainer" class="col-12">
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Shift Up" id="shiftUp"
+                                data-action="shift" data-command="2" />
+                        </div>
+                        <div id="shiftLeftRightContainer" class="col-12">
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Shift Left" id="shiftLeft"
+                                data-action="shift" data-command="0" />
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Shift Right" id="shiftRight"
+                                data-action="shift" data-command="1" />
+                        </div>
+                        <div id="shiftDownContainer" class="col-12">
+                            <input type="button" class="btn btn-dark btn-lg lens" value="Shift Down" id="shiftDown"
+                                data-action="shift" data-command="3" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div id="footerContainer" class="row">
+            <div id="footerLeft" class="col">
+                <p id="ioState">fookok</p>
+            </div>
+            <div id="footerRight" class="col">
+                <p id="appMessages"></p>
+            </div>
+        </div>
+    </footer>
+    <script src="./build/bundle.js"></script>
+</body>
+
+</html>

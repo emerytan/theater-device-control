@@ -1,0 +1,33 @@
+{
+  "name": "theater-device-control",
+  "version": "1.0.0",
+  "description": "control and monitor theater devices",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "build": "mkdir -p build && rollup -c",
+    "watch": "rollup -c --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emerytan/theater-device-control.git",
+  "keywords": [
+    "barco",
+    "dci"
+  ],
+  "author": "Emery Anderson",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4"
+  }
+}

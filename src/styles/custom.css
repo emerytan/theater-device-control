@@ -1,0 +1,174 @@
+html {
+    background-color: rgb(16, 16, 16);
+    height: 100%;
+    width: 100%
+}
+
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+    background-color: rgb(56, 56, 56);
+    color: rgb(156, 156, 156);
+    height: 100%;
+    width: 100%
+}
+
+
+.h1 {
+    font-size: .9fr;
+    margin: 0 auto;
+    padding: 10px
+}
+
+h4 {
+    color: cyan;
+    margin: 10px 0 auto;
+}
+
+h5 {
+    margin: 10px auto;
+    color: cadetblue
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+
+
+#main {
+    position: relative;
+    height: 90%;
+    border: 1px solid #808080;
+    border-radius: 10px;
+    background-color: rgb(32, 32, 32);
+    margin: 0 auto
+}
+
+
+#sideCont {
+    position: relative;
+}
+
+
+#ipContainer {
+    margin: 30px auto
+}
+
+
+#ipList,
+#macroList {
+    margin-bottom: 15px;
+    background-color: rgb(16, 16, 16);
+    color: rgb(156, 156, 156)
+}
+
+#connect {
+    margin-bottom: 27px
+}
+
+
+
+#testButtons {
+    text-align: center;
+    position: absolute;
+    height: 30%;
+    bottom: 0;
+    align-content: center;
+    margin: 0 auto
+}
+
+
+#mainContainer {
+    position: relative;
+    height: 100%;
+}
+
+
+#lensControls,
+#shiftControls,
+#powerControls,
+#ipCont {
+    margin: 30px auto;
+    text-align: center;
+    border: 1px solid #808080;
+    border-radius: 10px;
+}
+
+
+#zoomButtons,
+#focusButtons,
+#lampButtons,
+#dowserButtons {
+    margin: 10px auto
+}
+
+
+#shiftUpContainer,
+#shiftLeftRightContainer,
+#shiftDownContainer {
+    margin: 20px auto
+}
+
+#shiftLeft {
+    margin-right: 40px
+}
+
+#shiftRight {
+    margin-left: 40px
+}
+
+
+
+#footerContainer {
+    position: relative;
+    height: 100%;
+    width: auto;
+    margin: auto
+}
+
+
+#footerLeft {
+    text-align: left;
+}
+
+
+
+#footerRight {
+    text-align: right
+}
+
+.lens {
+    border: 1px solid #808080;
+}
+
+.test {
+    border: 1px solid #808080;
+    margin: 10px auto
+}
+
+.text-left {
+    text-align: left
+}
+
+/*bootstrap edits*/
+
+.btn {
+    width: 140px;
+    margin: auto;
+    font-size: .95em
+}
+
+.btn:hover {
+    border: 1px solid cyan
+}
+
+.test:hover {
+    border: 1px solid green
+}
+
+.form-control {
+    background-color: rgb(32, 32, 32);
+    color: rgb(156, 156, 156);
+    font-size: .9rem
+}
