@@ -55,12 +55,12 @@
                     <div id="powerContaier" class="row">
                         <div id="lampButtons" class="col-6">
                             <input type="button" id="lampPower" class="btn btn-dark lens" autocomplete="off"
-                                value="toggle" data-action="power" data-command=0 />
+                                value="toggle" data-action="lamp" data-command=0 />
                             <h5>Lamp</h5>
                         </div>
                         <div id="dowserButtons" class="col-6">
                             <input type="button" id="dowser" class="btn btn-dark lens" autocomplete="off" value="toggle"
-                                data-action="dowser" data-command=0 />
+                                data-action="shutter" data-command=0 />
                             <h5>Dowser</h5>
                         </div>
                     </div>
@@ -70,17 +70,17 @@
                     <div id="zoomFocusContainer" class="row">
                         <div id="focusButtons" class="col-6">
                             <input type="button" class="btn btn-dark btn-lg lens" value="Focus Out" id="focusOut"
-                                data-action="focus" data-command="1" />
+                                data-action="lens" data-command="focusOut" />
                             <h5>Focus</h5>
                             <input type="button" class="btn btn-dark btn-lg lens" value="Focus In" id="focusIn"
-                                data-action="focus" data-command="0" />
+                                data-action="lens" data-command="focusIn" />
                         </div>
                         <div id="zoomButtons" class="col-6">
                             <input type="button" class="btn btn-dark btn-lg lens" value="Zoom Out" id="zoomOut"
-                                data-action="zoom" data-command="1" />
+                                data-action="lens" data-command="zoomOut" />
                             <h5>Zoom</h5>
                             <input type="button" class="btn btn-dark btn-lg lens" value="Zoom In" id="zoomIn"
-                                data-action="zoom" data-command="0" />
+                                data-action="lens" data-command="zoomIn" />
                         </div>
                     </div>
                 </div>
@@ -89,17 +89,17 @@
                     <div id="shiftContainer" class="row">
                         <div id="shiftUpContainer" class="col-12">
                             <input type="button" class="btn btn-dark btn-lg lens" value="Shift Up" id="shiftUp"
-                                data-action="shift" data-command="2" />
+                                data-action="lens" data-command="shiftUp" />
                         </div>
                         <div id="shiftLeftRightContainer" class="col-12">
                             <input type="button" class="btn btn-dark btn-lg lens" value="Shift Left" id="shiftLeft"
-                                data-action="shift" data-command="0" />
+                                data-action="lens" data-command="shiftLeft" />
                             <input type="button" class="btn btn-dark btn-lg lens" value="Shift Right" id="shiftRight"
-                                data-action="shift" data-command="1" />
+                                data-action="lens" data-command="shiftRight" />
                         </div>
                         <div id="shiftDownContainer" class="col-12">
                             <input type="button" class="btn btn-dark btn-lg lens" value="Shift Down" id="shiftDown"
-                                data-action="shift" data-command="3" />
+                                data-action="lens" data-command="shiftDown" />
                         </div>
                     </div>
                 </div>

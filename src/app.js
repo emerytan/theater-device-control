@@ -18,14 +18,13 @@ const connectProjector = document.getElementById('connect')
 
 
 document.addEventListener('DOMContentLoaded', function () {
-
+	removeProjectors()
 	ipList.options.length = 0
 	appMessages.innerText = 'page fully loaded'
 	appMessages.style.color = 'green'
 	headerText.innerText = "CO3 Barco Web Control"
 	headerText.style.color = 'green'
 
-	
 	document.getElementById('test1').addEventListener('click', () => {
 		appMessages.innerText = 'test1'
 		activateButtons(lensButtons, true)
@@ -54,9 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (event.target.matches('.lens')) {
 			let CMD = event.target.dataset
 			appMessages.innerText = `action: ${CMD.action}  <--->   command: ${CMD.command}`
-			socket.emit('lens command', {
-				action: CMD.action,
-				command: CMD.command
+			socket.emit('barco command', {
+				setting: CMD.action,
+				state: CMD.command
 			})
 		} else if (event.target.matches('.test')) {
 			if (event.target.id === "connect" && connections.state === false) {
@@ -67,14 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
 					theater: ipList.options[ipList.selectedIndex].text
 				})
 			}
-			if (event.target.id === "connect" && connections.state === true)
+			if (event.target.id === "connect" && connections.state === true) {
 				socket.emit("projector disconnect", {
 					lastConnected: connections.lastConnected,
 					action: 'disconnect'
 				})
-
+				removeProjectors()
+			}
 			if (event.target.id === "selectMacro") {
 				console.log("send macro chnage request")
+				console.log(`index: ${macroList.options[macroList.selectedIndex].value}`)
+				console.log(`macroName: ${macroList.options[macroList.selectedIndex].text}`)
 				socket.emit('change macro', {
 					index: macroList.options[macroList.selectedIndex].value,
 					macroName: macroList.options[macroList.selectedIndex].text
@@ -143,10 +145,13 @@ document.addEventListener('DOMContentLoaded', function () {
 	socket.on('projectors', (arr) => {
 		connections.projectors = arr
 		console.log(arr)
-		addProjectors(arr)	
+		addProjectors(connections.projectors)	
 	})
 
 	socket.on('macros', (data) => {
+		connections.macros = data.list
+		connections.macroIndex = data.selected
+		console.log(`macro index: ${data.selected}`);
 		addMacros(data)
 	})
 
@@ -182,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			connections.ipIndex = connections.projectors.indexOf(msg.ip)
 			connections.lastConnected = msg.ip
 			connections.state = true
+			connections.theater = msg.theater
 			ipList.selectedIndex = connections.ipIndex
 			ipList.disabled = true
 			macroList.disabled = false
@@ -196,6 +202,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			ipList.disabled = false
 			macroList.disabled = true
 			clearPage()
+			removeProjectors()
+			removeMacros()
 			activateButtons(lensButtons, true)
 		}
 		ioState.innerText = `${msg.ip} - ${msg.online}`
@@ -213,6 +221,7 @@ function activateButtons(elements, action) {
 }
 
 function addProjectors(arr) {
+	removeProjectors()
 	let opt
 	for (let index = 0; index < arr.length; index++) {
 		opt = document.createElement('option')
@@ -234,7 +243,7 @@ function addMacros(macros) {
 		opt.value = index
 		macroList.appendChild(opt)
 	}
-	macroList.selectedIndex = macros.selected
+	macroList.selectedIndex = connections.macroIndex
 }
 
 function clearPage() {
@@ -255,10 +264,8 @@ function clearPage() {
 		connections.lamp = false
 	}
 
-	removeMacros()
-	removeProjectors()
-	addProjectors(connections.projectors)
 	
+	ipList.selectedIndex = 2
 	projectorConnected.innerText = ''
 	activeMacro.innerText = ''
 }

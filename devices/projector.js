@@ -26,18 +26,86 @@ io.on('connection', function (socket) {
 		updatePage(socket, barcoStates)
 	})
 
-	socket.on('dowser', (msg) => {
-		console.log('projector module');
-		console.log(msg);
-	})
 
 	socket.on('change macro', function (msg) {
 		var setMacro = msg.macroName
 		barcoStates.lastCommand = 'macro'
-		console.log(`setMacro ${setMacro}`)
+		console.log(msg)
 		writeMacro(projector, setMacro)
 		console.log('projector: writing macro ' + setMacro)
 	})
+
+
+	socket.on('barco command', function (val) {
+		console.log(`socket:  }---> ${val.setting} <---{ ${val.state} }`)
+		if (val.setting == 'lamp' || val.setting == 'shutter') {
+			switch (val.setting) {
+				case 'lamp':
+					barcoStates.lastCommand = 'lamp';
+					if (val.state === '0') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to off }`);
+						projector.write(Buffer.from(CMD.lampOff));
+					} 
+					if (val.state === '1') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to on }`);
+						projector.write(Buffer.from(CMD.lampOn))
+					};
+				break;
+				case 'shutter':
+					barcoStates.lastCommand = 'shutter';
+					if (val.state === '0') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to closed }`);
+						projector.write(Buffer.from(CMD.shutterClose));
+					} 
+					if (val.state === '1') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to open }`);
+						projector.write(Buffer.from(CMD.shutterOpen));
+					};
+				break;
+				default:
+					console.log('lamp shutter command fail bitch');
+				break;
+			}
+		}
+
+		if (val.setting == 'lens') {
+			barcoStates.lastCommand = val.state;
+			switch (val.state) {
+				case 'zoomIn':
+					projector.write(Buffer.from(CMD.zoomIn));
+					break;
+				case 'zoomOut':
+					projector.write(Buffer.from(CMD.zoomOut));
+					break;
+				case 'focusIn':
+					projector.write(Buffer.from(CMD.focusIn));
+					break;
+				case 'focusOut':
+					projector.write(Buffer.from(CMD.focusOut));
+					break;
+				case 'shiftUp':
+					projector.write(Buffer.from(CMD.shiftUp));
+					break;
+				case 'shiftDown':
+					projector.write(Buffer.from(CMD.shiftDown));
+					break;
+				case 'shiftLeft':
+					projector.write(Buffer.from(CMD.shiftLeft));
+					break;
+				case 'shiftRight':
+					projector.write(Buffer.from(CMD.shiftRight));
+					break;
+				default:
+					break;
+			};
+		};
+	})
+
+	socket.on('projector disconnect', (msg) => {
+		projector.end()
+		barcoStates.macros = ['']
+	})
+
 })
 
 ipcLocal.on('init projector', (msg) => {
@@ -45,23 +113,12 @@ ipcLocal.on('init projector', (msg) => {
 	thisDevice.host = msg.host
 	thisDevice.port = msg.port
 	barcoStates.theater = msg.theater
-	console.log(`projector module ipcLocal: 
-			host: ${msg.host}
-			port: ${msg.port}
-			`)
-
 	projector = net.connect({
 		host: thisDevice.host,
 		port: thisDevice.port
 	})
 
-	ipcLocal.on('disconnect projector', (msg) => {
-		console.log('projector module, request to disconnect')
-		console.log(msg)
-		projector.end()
-		barcoStates.macros = ['']
-	})
-
+	
 	projector.on('connect', function () {
 		thisDevice.online = true;
 		thisDevice.event = 'connected';
@@ -96,10 +153,8 @@ ipcLocal.on('init projector', (msg) => {
 		})
 	})
 
-	let cunt = 0
+	
 	projector.on('data', function dataEventHandler(data) {
-		cunt ++
-		console.log(`cunt: ${cunt}`);
 		// console.log(data.toJSON())
 		var x = data.indexOf(0x06, 0);
 		if (data[2] === 0 && x === 3) {
@@ -131,7 +186,9 @@ ipcLocal.on('init projector', (msg) => {
 						console.log('error');
 						break;
 				};
-			};
+			}
+
+
 		};
 
 		switch (data[x]) {
@@ -183,7 +240,16 @@ ipcLocal.on('init projector', (msg) => {
 				if (data[y] === 1) {
 					console.log('last macro parse');
 					barcoStates.lastMacro = data.toString('ascii', k + 2, i)
+					barcoStates.macroIndex = barcoStates.macros.indexOf(barcoStates.lastMacro)
 				}
+				setTimeout(() => {
+					io.sockets.emit('macros', {
+						list: barcoStates.macros,
+						selected: barcoStates.macroIndex
+					})
+					io.sockets.emit('last macro', barcoStates.lastMacro)
+					console.log(barcoStates);
+				}, 1000)
 				if (data[y] === 5) {
 					const cass = narr.toJSON().data
 					let count = 0
@@ -196,14 +262,6 @@ ipcLocal.on('init projector', (msg) => {
 							barcoStates.macros[count] = ''
 						}
 					}
-					setTimeout(() => {
-						barcoStates.macroIndex = barcoStates.macros.indexOf(barcoStates.lastMacro)
-						io.sockets.emit('macros', {
-							list: barcoStates.macros,
-							selected: barcoStates.macroIndex
-						})
-						io.sockets.emit('last macro', barcoStates.lastMacro)
-					}, 1000)
 				}
 				break;
 			default:

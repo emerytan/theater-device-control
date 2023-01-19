@@ -56,28 +56,6 @@ io.on('connection', (socket) => {
 		})
 	})
 
-	socket.on('projector disconnect', (msg) => {
-		console.log(`server module projector disconnect socket
-		last connected: ${msg.lastConnected}
-		action: ${msg.action}`)
-		ipcLocal.emit('disconnect projector', msg)
-	})
-
-	ipcLocal.on('projector connected', (msg) => {
-		projectorState.host = msg.host
-		projectorState.online = msg.online
-	})
-		
-	ipcLocal.on('projector disconnected', (msg) => {
-		console.log('server: ipcLocal projector is disconnected, sending sockets');
-		projectorState.online = msg.online
-		projectorState.host = msg.host
-		io.sockets.emit('projector connection', {
-			ip: msg.host,
-			online: msg.online
-		})
-	})
-
 	socket.on('disconnect', function (socket) {
 		connections.splice(connections.indexOf(socket), 1)
 		console.log(`server: number of client connections = ${connections.length}`)
