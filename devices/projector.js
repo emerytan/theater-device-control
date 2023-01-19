@@ -23,6 +23,7 @@ io.on('connection', function (socket) {
 
 	socket.on('page loaded', (msg) => {
 		console.log(`projector module: ${msg.message}`);
+		updatePage(socket, barcoStates)
 	})
 
 	socket.on('dowser', (msg) => {
@@ -43,6 +44,7 @@ ipcLocal.on('init projector', (msg) => {
 	io.sockets.emit('server messages', 'hello from projector module')
 	thisDevice.host = msg.host
 	thisDevice.port = msg.port
+	barcoStates.theater = msg.theater
 	console.log(`projector module ipcLocal: 
 			host: ${msg.host}
 			port: ${msg.port}
@@ -71,7 +73,8 @@ ipcLocal.on('init projector', (msg) => {
 		barcoStates.lastCommand = 'getMacros'
 		io.sockets.emit('projector connection', {
 			ip: barcoStates.host,
-			online: barcoStates.online
+			online: barcoStates.online,
+			theater: barcoStates.theater
 		})
 	});
 
@@ -91,7 +94,8 @@ ipcLocal.on('init projector', (msg) => {
 			ip: barcoStates.host,
 			online: barcoStates.online
 		})
-	});
+	})
+
 	let cunt = 0
 	projector.on('data', function dataEventHandler(data) {
 		cunt ++
@@ -179,10 +183,6 @@ ipcLocal.on('init projector', (msg) => {
 				if (data[y] === 1) {
 					console.log('last macro parse');
 					barcoStates.lastMacro = data.toString('ascii', k + 2, i)
-					ipcLocal.emit('update', {
-						barcoStates
-					})
-					console.log(ipcLocal.listenerCount('update'))
 				}
 				if (data[y] === 5) {
 					const cass = narr.toJSON().data
@@ -220,4 +220,20 @@ ipcLocal.on('init projector', (msg) => {
 	})
 })
 
-export { barcoStates }
+function updatePage(socket, state) {
+	if (state.online) {
+		socket.emit('lamp', state.lamp)
+		socket.emit('dowser', state.shutter)
+		socket.emit('macros', {
+			list: state.macros,
+			selected: state.macroIndex
+		})
+		socket.emit('last macro', state.lastMacro)
+		socket.emit('projector connection', {
+			ip: state.host,
+			online: state.online,
+			theater: state.theater
+		})
+	}
+	
+}

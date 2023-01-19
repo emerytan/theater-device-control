@@ -62,8 +62,9 @@ document.addEventListener('DOMContentLoaded', function () {
 			if (event.target.id === "connect" && connections.state === false) {
 				console.log("send connect socket")
 				socket.emit('projector connect', {
-					ip: ipList.options[ipList.selectedIndex].text,
-					action: 'connect'
+					ip: ipList.options[ipList.selectedIndex].dataset.ip,
+					action: 'connect',
+					theater: ipList.options[ipList.selectedIndex].text
 				})
 			}
 			if (event.target.id === "connect" && connections.state === true)
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			lampPower.dataset.command = 0
 			lampPower.value = 'On'
 			connections.lamp = true
+			activateButtons(lensButtons, false)
 		} else if (msg == false) {
 			appMessages.innerText = 'lamp is off'
 			lampPower.classList.remove('btn-success')
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	socket.on('projectors', (arr) => {
 		connections.projectors = arr
 		console.log(arr)
-		addProjectors(arr)		
+		addProjectors(arr)	
 	})
 
 	socket.on('macros', (data) => {
@@ -149,8 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 
 	socket.on('last macro', (msg) => {
-		activeMacro.innerText = msg
+		activeMacro.innerText = `active preset:
+		${msg}`
 		activeMacro.style.color = 'goldenrod'
+		activeMacro.style.fontSize = '.9em'
 		connections.selectedMacro = msg
 	})
 
@@ -169,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 
 	socket.on('projector connection', (msg) => {
-		projectorConnected.innerText = msg.ip
+		projectorConnected.innerText = `connected to: ${msg.theater}`
 		if (msg.online === true) {
 			projectorConnected.style.color = 'green'
 			connectProjector.innerText = 'Disconnect'
@@ -181,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			ipList.selectedIndex = connections.ipIndex
 			ipList.disabled = true
 			macroList.disabled = false
+			activateButtons(lensButtons, false)
 		}
 		if (msg.online === false) {
 			projectorConnected.style.color = 'red'
@@ -191,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			ipList.disabled = false
 			macroList.disabled = true
 			clearPage()
+			activateButtons(lensButtons, true)
 		}
 		ioState.innerText = `${msg.ip} - ${msg.online}`
 	})
@@ -210,13 +216,16 @@ function addProjectors(arr) {
 	let opt
 	for (let index = 0; index < arr.length; index++) {
 		opt = document.createElement('option')
-		opt.textContent = arr[index]
+		opt.textContent = arr[index][1]
 		opt.value = index
+		opt.dataset.ip = arr[index][0]
 		ipList.appendChild(opt)
 	}
+	ipList.selectedIndex = 2
 }
 
 function addMacros(macros) {
+	removeMacros()
 	let opt
 	var arr = macros.list
 	for (let index = 0; index < arr.length; index++) {
@@ -246,10 +255,17 @@ function clearPage() {
 		connections.lamp = false
 	}
 
+	removeMacros()
+	removeProjectors()
+	addProjectors(connections.projectors)
+	
 	projectorConnected.innerText = ''
 	activeMacro.innerText = ''
+}
 
-	let k = macroList.options.length - 1
+
+function removeProjectors() {
+	let k = ipList.options.length - 1
 	for (let i = k; i >= 0; i--) {
 		macroList.options.remove(i)
 	}
