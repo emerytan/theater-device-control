@@ -17,7 +17,7 @@
             <div id="sideCont" class="col-4">
                 <div id="ipControls">
                     <div id="ipContainer" class="col">
-                        <label for="ipaddr" class="text-left">Select a Projector</label>
+                        <label id="ipLabel" for="ipList" class="text-left">Select a Projector</label>
                         <select class="form-control" id="ipList">
                             <option selected>Choose...</option>
                             <option value="1">10.208.79.50</option>
@@ -25,12 +25,12 @@
                             <option value="3">Three</option>
                         </select>
                         <button id="connect" class="btn btn-dark test" data-action="connect">Connect</button>
-                        <p id="projectorConnected"></p>
-                        <p id="activeMacro"></p>
                     </div>
                 </div>
                 <div id="macroControls" class="col">
                     <div id="macroContainer">
+                        <p id="projectorConnected"></p>
+                        <p id="activeMacro"></p>
                         <label for="macroList" class="text-left">Select a Macro</label>
                         <select class="form-control" id="macroList">
                             <option selected>Choose...</option>

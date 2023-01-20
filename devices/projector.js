@@ -146,7 +146,6 @@ ipcLocal.on('init projector', (msg) => {
 		thisDevice.event = 'close'
 		barcoStates.online = thisDevice.online
 		console.log('projector tcp connection closed')
-		console.log(barcoStates)
 		io.sockets.emit('projector connection', {
 			ip: barcoStates.host,
 			online: barcoStates.online

@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	socket.on('projectors', (arr) => {
 		connections.projectors = arr
-		console.log(arr)
+		console.table(arr)
 		addProjectors(connections.projectors)	
 	})
 
