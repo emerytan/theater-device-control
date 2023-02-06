@@ -187,7 +187,6 @@ ipcLocal.on('init projector', (msg) => {
 				};
 			}
 
-
 		};
 
 		switch (data[x]) {
@@ -240,15 +239,15 @@ ipcLocal.on('init projector', (msg) => {
 					console.log('last macro parse');
 					barcoStates.lastMacro = data.toString('ascii', k + 2, i)
 					barcoStates.macroIndex = barcoStates.macros.indexOf(barcoStates.lastMacro)
+					setTimeout(() => {
+						io.sockets.emit('macros', {
+							list: barcoStates.macros,
+							selected: barcoStates.macroIndex
+						})
+						io.sockets.emit('last macro', barcoStates.lastMacro)
+						// console.log(barcoStates);
+					}, 1000)
 				}
-				setTimeout(() => {
-					io.sockets.emit('macros', {
-						list: barcoStates.macros,
-						selected: barcoStates.macroIndex
-					})
-					io.sockets.emit('last macro', barcoStates.lastMacro)
-					console.log(barcoStates);
-				}, 1000)
 				if (data[y] === 5) {
 					const cass = narr.toJSON().data
 					let count = 0
