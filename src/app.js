@@ -1,4 +1,5 @@
 import io from 'socket.io-client'
+
 const socket = io.connect()
 
 const appMessages = document.getElementById('appMessages')
@@ -11,11 +12,14 @@ const lampPower = document.getElementById('lampPower')
 const dowser = document.getElementById('dowser')
 const projectorConnected = document.getElementById('projectorConnected')
 const activeMacro = document.getElementById('activeMacro')
+const mute = document.getElementById('cp750mute')
+const fader = document.getElementById('cp750fader')
+const input = document.getElementById('cp750input')
+
 const connections = {
 	state: false
 }
 const connectProjector = document.getElementById('connect')
-
 
 document.addEventListener('DOMContentLoaded', function () {
 	removeProjectors()
@@ -24,24 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	appMessages.style.color = 'green'
 	headerText.innerText = "CO3 Barco Web Control"
 	headerText.style.color = 'green'
-
-	document.getElementById('test1').addEventListener('click', () => {
-		appMessages.innerText = 'test1'
-		activateButtons(lensButtons, true)
-	})
-
-	document.getElementById('test2').addEventListener('click', () => {
-		appMessages.innerText = 'test2'		
-		activateButtons(lensButtons, false)
-	})
-
-	document.getElementById('test3').addEventListener('click', () => {
-		appMessages.innerText = 'test3'		
-	})
-
-	document.getElementById('test4').addEventListener('click', () => {
-		appMessages.innerText = 'test4'		
-	})
 
     dowser.addEventListener('click', (ele) => {
 		appMessages.innerText = 'dowser'
@@ -85,9 +71,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	})
 	
-
-	// sockets
-
 	socket.on('connect', () => {
 		ioState.innerText = 'Web server online'
 		ioState.style.color = 'green'
@@ -96,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		})
 		removeMacros()
 	})
-
 
 	socket.on('lamp', (msg) => {
 		ioState.innerText = `lamp state socket: ${msg}`
@@ -204,11 +186,36 @@ document.addEventListener('DOMContentLoaded', function () {
 			clearPage()
 			removeProjectors()
 			removeMacros()
+			clearDolby()
 			activateButtons(lensButtons, true)
 		}
 		ioState.innerText = `${msg.ip} - ${msg.online}`
 	})
 
+	socket.on('cp750 mute', (msg) => {
+		console.log(msg);
+		connections.mute = msg.mute
+		if (msg.mute === '0') {
+			mute.innerText = 'Mute Off'
+			mute.classList.remove('btn-dark')
+			mute.classList.add('btn-success')
+		} 
+		if (msg.mute === '1') {
+			mute.innerText = 'Mute On'
+			mute.classList.remove('btn-dark')
+			mute.classList.add('btn-danger')
+		}
+	})
+
+	socket.on('cp750 fader', (msg) => {
+		connections.fader = Number(msg.fader) / 10
+		fader.innerText = `level: ${connections.fader}`
+	})
+
+	socket.on('cp750 input', (msg) => {
+		connections.input = msg.input
+		input.innerText = `source: ${connections.input}`
+	})
 })
 
 
@@ -264,7 +271,6 @@ function clearPage() {
 		connections.lamp = false
 	}
 
-	
 	ipList.selectedIndex = 2
 	projectorConnected.innerText = ''
 	activeMacro.innerText = ''
@@ -283,4 +289,20 @@ function removeMacros() {
 	for (let i = k; i >= 0; i--) {
 		macroList.options.remove(i)
 	}
+}
+
+function clearDolby() {
+	if (connections.mute === '0') {
+		mute.innerText = 'Mute'
+		mute.classList.remove('btn-success')
+		mute.classList.add('btn-dark')
+	} 
+	if (connections.mute === '1') {
+		mute.innerText = 'Mute'
+		mute.classList.remove('btn-danger')
+		mute.classList.add('btn-dark')
+	}
+
+	fader.innerText = 'disco'
+	input.innerText = 'donny'
 }

@@ -5,6 +5,7 @@ import { getStates } from './barcoDC.js'
 import { getMacros } from './barcoDC.js'
 import { writeMacro } from './barcoDC.js'
 import { ipcLocal } from '../server.js'
+import { cp750 } from './cp750.js'
 
 
 const commandSuccess = Buffer.from(CMD.success)
@@ -17,96 +18,6 @@ const barcoStates = {
 	macros: ['']
 };
 
-
-io.on('connection', function (socket) {
-	console.log('projector websockets running')
-
-	socket.on('page loaded', (msg) => {
-		console.log(`projector module: ${msg.message}`);
-		updatePage(socket, barcoStates)
-	})
-
-
-	socket.on('change macro', function (msg) {
-		var setMacro = msg.macroName
-		barcoStates.lastCommand = 'macro'
-		console.log(msg)
-		writeMacro(projector, setMacro)
-		console.log('projector: writing macro ' + setMacro)
-	})
-
-
-	socket.on('barco command', function (val) {
-		console.log(`socket:  }---> ${val.setting} <---{ ${val.state} }`)
-		if (val.setting == 'lamp' || val.setting == 'shutter') {
-			switch (val.setting) {
-				case 'lamp':
-					barcoStates.lastCommand = 'lamp';
-					if (val.state === '0') {
-						console.log(`socket: }---> ${val.setting} <---{ switched to off }`);
-						projector.write(Buffer.from(CMD.lampOff));
-					} 
-					if (val.state === '1') {
-						console.log(`socket: }---> ${val.setting} <---{ switched to on }`);
-						projector.write(Buffer.from(CMD.lampOn))
-					};
-				break;
-				case 'shutter':
-					barcoStates.lastCommand = 'shutter';
-					if (val.state === '0') {
-						console.log(`socket: }---> ${val.setting} <---{ switched to closed }`);
-						projector.write(Buffer.from(CMD.shutterClose));
-					} 
-					if (val.state === '1') {
-						console.log(`socket: }---> ${val.setting} <---{ switched to open }`);
-						projector.write(Buffer.from(CMD.shutterOpen));
-					};
-				break;
-				default:
-					console.log('lamp shutter command fail bitch');
-				break;
-			}
-		}
-
-		if (val.setting == 'lens') {
-			barcoStates.lastCommand = val.state;
-			switch (val.state) {
-				case 'zoomIn':
-					projector.write(Buffer.from(CMD.zoomIn));
-					break;
-				case 'zoomOut':
-					projector.write(Buffer.from(CMD.zoomOut));
-					break;
-				case 'focusIn':
-					projector.write(Buffer.from(CMD.focusIn));
-					break;
-				case 'focusOut':
-					projector.write(Buffer.from(CMD.focusOut));
-					break;
-				case 'shiftUp':
-					projector.write(Buffer.from(CMD.shiftUp));
-					break;
-				case 'shiftDown':
-					projector.write(Buffer.from(CMD.shiftDown));
-					break;
-				case 'shiftLeft':
-					projector.write(Buffer.from(CMD.shiftLeft));
-					break;
-				case 'shiftRight':
-					projector.write(Buffer.from(CMD.shiftRight));
-					break;
-				default:
-					break;
-			};
-		};
-	})
-
-	socket.on('projector disconnect', (msg) => {
-		projector.end()
-		barcoStates.macros = ['']
-	})
-
-})
 
 ipcLocal.on('init projector', (msg) => {
 	io.sockets.emit('server messages', 'hello from projector module')
@@ -145,6 +56,7 @@ ipcLocal.on('init projector', (msg) => {
 		thisDevice.online = false
 		thisDevice.event = 'close'
 		barcoStates.online = thisDevice.online
+        cp750.write(Buffer.from('exit\n'))
 		console.log('projector tcp connection closed')
 		io.sockets.emit('projector connection', {
 			ip: barcoStates.host,
@@ -245,6 +157,7 @@ ipcLocal.on('init projector', (msg) => {
 							selected: barcoStates.macroIndex
 						})
 						io.sockets.emit('last macro', barcoStates.lastMacro)
+						io.sockets.emit('swift macros', barcoStates.macros)
 						// console.log(barcoStates);
 					}, 1000)
 				}
@@ -275,6 +188,98 @@ ipcLocal.on('init projector', (msg) => {
 
 	})
 })
+
+
+io.on('connection', function (socket) {
+	console.log('projector websockets running')
+
+	socket.on('page loaded', (msg) => {
+		console.log(`projector module: ${msg.message}`);
+		updatePage(socket, barcoStates)
+	})
+
+
+	socket.on('change macro', function (msg) {
+		var setMacro = msg.macroName
+		barcoStates.lastCommand = 'macro'
+		console.log(msg)
+		writeMacro(projector, setMacro)
+		console.log('projector: writing macro ' + setMacro)
+	})
+
+
+	socket.on('barco command', function (val) {
+		console.log(`socket:  }---> ${val.setting} <---{ ${val.state} }`)
+		if (val.setting == 'lamp' || val.setting == 'shutter') {
+			switch (val.setting) {
+				case 'lamp':
+					barcoStates.lastCommand = 'lamp';
+					if (val.state === '0') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to off }`);
+						projector.write(Buffer.from(CMD.lampOff));
+					} 
+					if (val.state === '1') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to on }`);
+						projector.write(Buffer.from(CMD.lampOn))
+					};
+				break;
+				case 'shutter':
+					barcoStates.lastCommand = 'shutter';
+					if (val.state === '0') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to closed }`);
+						projector.write(Buffer.from(CMD.shutterClose));
+					} 
+					if (val.state === '1') {
+						console.log(`socket: }---> ${val.setting} <---{ switched to open }`);
+						projector.write(Buffer.from(CMD.shutterOpen));
+					};
+				break;
+				default:
+					console.log('lamp shutter command fail bitch');
+				break;
+			}
+		}
+
+		if (val.setting == 'lens') {
+			barcoStates.lastCommand = val.state;
+			switch (val.state) {
+				case 'zoomIn':
+					projector.write(Buffer.from(CMD.zoomIn));
+					break;
+				case 'zoomOut':
+					projector.write(Buffer.from(CMD.zoomOut));
+					break;
+				case 'focusIn':
+					projector.write(Buffer.from(CMD.focusIn));
+					break;
+				case 'focusOut':
+					projector.write(Buffer.from(CMD.focusOut));
+					break;
+				case 'shiftUp':
+					projector.write(Buffer.from(CMD.shiftUp));
+					break;
+				case 'shiftDown':
+					projector.write(Buffer.from(CMD.shiftDown));
+					break;
+				case 'shiftLeft':
+					projector.write(Buffer.from(CMD.shiftLeft));
+					break;
+				case 'shiftRight':
+					projector.write(Buffer.from(CMD.shiftRight));
+					break;
+				default:
+					break;
+			};
+		};
+	})
+
+	socket.on('projector disconnect', (msg) => {
+		projector.end()
+		barcoStates.macros = ['']
+	})
+
+})
+
 
 function updatePage(socket, state) {
 	if (state.online) {

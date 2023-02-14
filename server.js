@@ -23,8 +23,8 @@ app.get('./', function (req, res) {
 server.listen(3000, () => {
 	console.log('Barco control webApp listening on port 3000')
 	import('./devices/projector.js')
+	import('./devices/cp750.js')
 })
-
 
 io.on('connection', (socket) => {
 	connections.push(socket)
@@ -36,14 +36,14 @@ io.on('connection', (socket) => {
 		updatePage(projectorState)
 	}
 
-	socket.on('projector socket', (msg) => {
-		console.log(`message from projector socket: ${msg}`)
-	})
-
 	socket.on('page loaded', () => {
 		if (projectorState.online === true) {
 			updatePage(projectorState)
 		}
+	})
+
+	socket.on('swift test', (data) => {
+		console.log(data)
 	})
 
 	socket.on('projector connect', (msg) => {

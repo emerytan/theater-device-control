@@ -172,3 +172,27 @@ label {
     color: rgb(156, 156, 156);
     font-size: .9rem
 }
+
+.rangeSlider {
+    width: 100%;
+}
+
+.mySlider {
+    background: rgb(156, 156, 156);
+    width: 80%;
+    height: 40px;
+    opacity: 2;    
+}
+
+.mySlider:hover {
+    opacity: 1;
+}
+
+.myslider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    cursor: pointer;
+    background: #34495E  ;
+    width: 5%;
+    height: 20px;
+}
+

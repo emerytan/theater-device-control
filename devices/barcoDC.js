@@ -82,12 +82,6 @@ export function getStates(projector) {
 
 export function getMacros(projector) {
     setTimeout(allMacs, 900);
-    // setTimeout(mac1, 900);
-    // setTimeout(mac2, 1000);
-    // setTimeout(mac3, 1100);
-    // setTimeout(mac4, 1200);
-    // setTimeout(mac5, 1300);
-    // setTimeout(mac6, 1400)
     setTimeout(macRead, 1100);
 
     function mac1() {
