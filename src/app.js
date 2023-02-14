@@ -15,6 +15,7 @@ const activeMacro = document.getElementById('activeMacro')
 const mute = document.getElementById('cp750mute')
 const fader = document.getElementById('cp750fader')
 const input = document.getElementById('cp750input')
+const level = document.getElementById('cp750Level')
 
 const connections = {
 	state: false
@@ -209,12 +210,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	socket.on('cp750 fader', (msg) => {
 		connections.fader = Number(msg.fader) / 10
-		fader.innerText = `level: ${connections.fader}`
+		fader.value = msg.fader
+		level.innerText = `Output Level: ${connections.fader}`
 	})
 
 	socket.on('cp750 input', (msg) => {
 		connections.input = msg.input
 		input.innerText = `source: ${connections.input}`
+
 	})
 })
 
@@ -293,16 +296,15 @@ function removeMacros() {
 
 function clearDolby() {
 	if (connections.mute === '0') {
-		mute.innerText = 'Mute'
+		mute.innerText = 'Max'
 		mute.classList.remove('btn-success')
 		mute.classList.add('btn-dark')
 	} 
 	if (connections.mute === '1') {
-		mute.innerText = 'Mute'
+		mute.innerText = 'Max'
 		mute.classList.remove('btn-danger')
 		mute.classList.add('btn-dark')
 	}
 
-	fader.innerText = 'disco'
-	input.innerText = 'donny'
+	input.innerText = 'rules!'
 }

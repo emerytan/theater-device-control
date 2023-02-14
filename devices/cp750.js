@@ -82,6 +82,11 @@ function asciiToString(arr) {
     io.sockets.emit('cp750 fader', {
         fader: Number(faderValue[2])
     })
+
+    io.sockets.emit('swift mute', muteState[2])
+    io.sockets.emit('swift fader', faderValue[2])
+    io.sockets.emit('swift input', inputMode[2])
+
     chunk = []
 }
 
