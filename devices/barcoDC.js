@@ -62,9 +62,9 @@ export { CMD }
 
 
 export function getStates(projector) {
-    setTimeout(pwRead, 500);
-    setTimeout(lmpRead, 600);
-    setTimeout(dowRead, 700);
+    setTimeout(pwRead, 200);
+    setTimeout(lmpRead, 300);
+    setTimeout(dowRead, 400);
 
     function pwRead() {
         projector.write(Buffer.from(CMD.powerRead));
@@ -81,8 +81,8 @@ export function getStates(projector) {
 }
 
 export function getMacros(projector) {
-    setTimeout(allMacs, 900);
-    setTimeout(macRead, 1100);
+    setTimeout(allMacs, 500);
+    setTimeout(macRead, 600);
 
     function mac1() {
         projector.write(Buffer.from(CMD.mac1));

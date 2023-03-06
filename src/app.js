@@ -37,6 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 
 	document.addEventListener('click', function (event) {
+		if (event.target.matches('.dolby')) {
+			let CMD = event.target.dataset
+			socket.emit('dolby command', {
+				setting: CMD.action,
+				state: CMD.command
+			})
+		}
+		
 		if (event.target.matches('.lens')) {
 			let CMD = event.target.dataset
 			appMessages.innerText = `action: ${CMD.action}  <--->   command: ${CMD.command}`
@@ -125,6 +133,27 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	})
 
+	socket.on('cp750 mute', (msg) => {
+		mute.classList.remove('btn-dark')
+		console.log(msg);
+		connections.mute = msg.mute
+		if (msg.mute === '0') {
+			mute.innerText = 'Mute Off'
+			mute.classList.remove('btn-dark')
+			mute.classList.remove('btn-danger')
+			mute.classList.add('btn-success')
+		} 
+		if (msg.mute === '1') {
+			mute.innerText = 'Mute On'
+			mute.classList.remove('btn-dark')
+			mute.classList.remove('btn-success')
+			mute.classList.add('btn-danger')
+		}
+		mute.dataset.command = msg.mute
+	})
+
+
+
 	socket.on('projectors', (arr) => {
 		connections.projectors = arr
 		console.table(arr)
@@ -193,20 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		ioState.innerText = `${msg.ip} - ${msg.online}`
 	})
 
-	socket.on('cp750 mute', (msg) => {
-		console.log(msg);
-		connections.mute = msg.mute
-		if (msg.mute === '0') {
-			mute.innerText = 'Mute Off'
-			mute.classList.remove('btn-dark')
-			mute.classList.add('btn-success')
-		} 
-		if (msg.mute === '1') {
-			mute.innerText = 'Mute On'
-			mute.classList.remove('btn-dark')
-			mute.classList.add('btn-danger')
-		}
-	})
+	
 
 	socket.on('cp750 fader', (msg) => {
 		connections.fader = Number(msg.fader) / 10
