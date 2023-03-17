@@ -19,6 +19,11 @@ const barcoStates = {
 };
 
 
+
+ipcLocal.on('devices disconnect', () => {
+	projector.end()
+})
+
 ipcLocal.on('init projector', (msg) => {
 	io.sockets.emit('server messages', 'hello from projector module')
 	thisDevice.host = msg.host
@@ -44,6 +49,8 @@ ipcLocal.on('init projector', (msg) => {
 			online: barcoStates.online,
 			theater: barcoStates.theater
 		})
+
+		io.sockets.emit('swift disco', true)
 	});
 
 	projector.on('error', function () {
@@ -62,19 +69,20 @@ ipcLocal.on('init projector', (msg) => {
 			ip: barcoStates.host,
 			online: barcoStates.online
 		})
+
+		io.sockets.emit('swift disco', false)
 	})
 
 	
 	projector.on('data', function dataEventHandler(data) {
-		// console.log(data.toJSON())
-		var x = data.indexOf(0x06, 0);
+		let x = data.indexOf(0x06, 0);
 		if (data[2] === 0 && x === 3) {
 			x = 8
 		} else if (x === -1 || x !== 3) {
 			x = 2
 		};
-		var y = x + 1
-		var z = x + 2
+		let y = x + 1
+		let z = x + 2
 
 		if (data.equals(commandSuccess) === true) {
 			
@@ -193,6 +201,7 @@ ipcLocal.on('init projector', (msg) => {
 io.on('connection', function (socket) {
 	console.log('projector websockets running')
 
+
 	socket.on('page loaded', (msg) => {
 		console.log(`projector module: ${msg.message}`);
 		updatePage(socket, barcoStates)
@@ -272,6 +281,7 @@ io.on('connection', function (socket) {
 			};
 		};
 	})
+
 
 	socket.on('projector disconnect', (msg) => {
 		projector.end()

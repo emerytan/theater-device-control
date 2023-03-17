@@ -59,6 +59,9 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', function (socket) {
 		connections.splice(connections.indexOf(socket), 1)
 		console.log(`server: number of client connections = ${connections.length}`)
+		if (connections.length == '0') {
+			ipcLocal.emit('devices disconnect')
+		}
 	})
 })
 

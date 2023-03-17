@@ -17,11 +17,11 @@ ipcLocal.on('init projector', (msg) => {
         remoteIP = '10.208.79.33'
     }
     if (msg.host === '10.208.79.48') {
-        remoteIP = '10.208.79.141' 
+        remoteIP = '10.208.79.141'
     }
 
     console.log(`cp750 module: remoteIP = ${remoteIP}`);
-    
+
 
     cp750 = net.connect({
         host: remoteIP,
@@ -34,7 +34,7 @@ ipcLocal.on('init projector', (msg) => {
         console.log('cp750 connected....')
         getStates()
     })
-    
+
     cp750.on('data', (data) => {
         chunk.push(data)
     })
@@ -66,10 +66,11 @@ function asciiToString(arr) {
     let muteState = muteRegex.exec(line)
     let faderValue = faderRegex.exec(line)
     let inputMode = inputRegex.exec(line)
-    console.log(`cp750 status....fuck you Max
+    console.log(`cp750 status....max rules!
                 mute: ${muteState[2]}
                 fader: ${faderValue[2]}
-                input: ${inputMode[2]}`)     
+                input: ${inputMode[2]}`)
+    
     io.sockets.emit('cp750 mute', {
         mute: muteState[2]
     })
@@ -87,17 +88,14 @@ function asciiToString(arr) {
 
 io.on('connection', (socket) => {
     console.log('cp750 module: io sockets')
-
     socket.on('dolby command', (msg) => {
         switch (msg.setting) {
             case 'mute':
                 console.log(msg)
                 if (msg.state === '0') {
-                    // mute is off
                     cp750.write(Buffer.from('cp750.sys.mute 1\n'))
                 }
                 if (msg.state === '1') {
-                    // mute is on
                     cp750.write(Buffer.from('cp750.sys.mute 0\n'))
                 }
                 getStates()
@@ -130,5 +128,5 @@ function getStates(setting) {
     setTimeout(() => {
         asciiToString(chunk)
         chunk = []
-    }, 100)
+    }, 200)
 }

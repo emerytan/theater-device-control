@@ -162,7 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	socket.on('macros', (data) => {
 		connections.macros = data.list
-		connections.macroIndex = data.selected
+		connections.macroIndex = data.
+		
 		console.log(`macro index: ${data.selected}`);
 		addMacros(data)
 	})
