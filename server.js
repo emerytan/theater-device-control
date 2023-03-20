@@ -27,8 +27,10 @@ server.listen(3000, () => {
 })
 
 io.on('connection', (socket) => {
+	console.log(socket)
 	connections.push(socket)
 	socket.emit('projectors', projectors)
+	socket.emit('hi swift')
 	console.log(`server: number of client connections = ${connections.length}`)
 	
 	if (projectorState.online === true) {
@@ -57,7 +59,9 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('disconnect', function (socket) {
+		socket.emit('bye swift')
 		connections.splice(connections.indexOf(socket), 1)
+
 		console.log(`server: number of client connections = ${connections.length}`)
 		if (connections.length == '0') {
 			ipcLocal.emit('devices disconnect')
