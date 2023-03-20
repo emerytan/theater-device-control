@@ -84,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		ioState.innerText = 'Web server online'
 		ioState.style.color = 'green'
 		socket.emit('page loaded', {
-			message: 'hello world'
+			message: 'hello world',
+			deviceState: connections.state
 		})
 		removeMacros()
 	})
@@ -162,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	socket.on('macros', (data) => {
 		connections.macros = data.list
-		connections.macroIndex = data.
+		connections.macroIndex = data.selected
 		
 		console.log(`macro index: ${data.selected}`);
 		addMacros(data)

@@ -49,7 +49,7 @@ ipcLocal.on('init projector', (msg) => {
 			online: barcoStates.online,
 			theater: barcoStates.theater
 		})
-
+		ipcLocal.emit('server update', true)
 		io.sockets.emit('swift disco', true)
 	});
 
@@ -64,12 +64,12 @@ ipcLocal.on('init projector', (msg) => {
 		thisDevice.event = 'close'
 		barcoStates.online = thisDevice.online
         cp750.write(Buffer.from('exit\n'))
-		console.log('projector tcp connection closed')
+		console.log('projector: tcp connection closed')
 		io.sockets.emit('projector connection', {
 			ip: barcoStates.host,
 			online: barcoStates.online
 		})
-
+		ipcLocal.emit('server update', false)
 		io.sockets.emit('swift disco', false)
 	})
 
@@ -166,7 +166,7 @@ ipcLocal.on('init projector', (msg) => {
 						})
 						io.sockets.emit('last macro', barcoStates.lastMacro)
 						io.sockets.emit('swift macros', barcoStates.macros)
-						// console.log(barcoStates);
+						// console.log(barcoStates)
 					}, 1000)
 				}
 				if (data[y] === 5) {

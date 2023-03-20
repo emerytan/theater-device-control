@@ -7,13 +7,16 @@ const server = http.createServer(app)
 const io = new Server(server)
 const ipcLocal = new EventEmitter()
 let connections = []
-var projectorState = {}
+var projectorState = {
+	online: false
+}
 const projectors = [
 	[ '10.208.79.66', 'T9' ],
 	[ '10.208.79.48', 'T2' ],
 	[ '10.208.79.50', 'T1' ]
 ]
 
+// web server startup
 app.use(express.static('./'))
 app.use(express.static('./build/bundle.js'))
 app.get('./', function (req, res) {
@@ -26,22 +29,19 @@ server.listen(3000, () => {
 	import('./devices/cp750.js')
 })
 
+// sockets 
 io.on('connection', (socket) => {
-	console.log(socket)
+	console.log(`server: new socket connection ${socket.handshake.address}`)
 	connections.push(socket)
 	socket.emit('projectors', projectors)
 	socket.emit('hi swift')
 	console.log(`server: number of client connections = ${connections.length}`)
 	
-	if (projectorState.online === true) {
-		console.log('new connection, send page update...');
-		updatePage(projectorState)
-	}
 
-	socket.on('page loaded', () => {
-		if (projectorState.online === true) {
-			updatePage(projectorState)
-		}
+	socket.on('page loaded', (msg) => {
+		console.log('server: page loaded message')
+		console.log(msg.deviceState)
+		projectorState.online = msg.deviceState
 	})
 
 	socket.on('swift test', (data) => {
@@ -59,14 +59,19 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('disconnect', function (socket) {
-		socket.emit('bye swift')
 		connections.splice(connections.indexOf(socket), 1)
-
 		console.log(`server: number of client connections = ${connections.length}`)
-		if (connections.length == '0') {
+		if (connections.length === 0 && projectorState.online === true) {
 			ipcLocal.emit('devices disconnect')
 		}
 	})
+})
+
+// interprocess comms
+ipcLocal.on('server update', (msg) => {
+	console.log('server: ipcLocal')
+	console.log(msg)
+	projectorState.online = msg
 })
 
 export { ipcLocal, io }
