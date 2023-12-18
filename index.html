@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../src/styles/custom.css">
     <title>CO3 Barco Web Control</title>
 </head>
+
 <body class="container-fluid">
     <header class="row">
         <h1 class="h1 text-center" id="headerText">Barco control</h1>
@@ -38,16 +39,18 @@
                         <button id="selectMacro" class="btn btn-dark test">Apply</button>
                     </div>
                 </div>
-                
+
                 <div id="testButtons" class="col">
                     <h4>Dolby Stuff</h4>
                     <button id="cp750mute" class="btn btn-dark dolby" data-action="mute" data-command="1">test1</button>
-                    <button id="cp750input" class="btn btn-dark dolby" data-action="input" data-command="dig_1">test3</button>
+                    <button id="cp750input" class="btn btn-dark dolby" data-action="input"
+                        data-command="dig_1">test3</button>
                     <br>
                     <br>
                     <div class="rangeSlider">
                         <h4 id="cp750Level">Output Level</h4>
-                        <input type="range" min="0" max="100" value="10" data-action="fader" class="mySlider" id="cp750fader">
+                        <input type="range" min="0" max="100" value="10" data-action="fader" class="mySlider"
+                            id="cp750fader">
                     </div>
                 </div>
             </div>

@@ -66,10 +66,12 @@ function asciiToString(arr) {
     let muteState = muteRegex.exec(line)
     let faderValue = faderRegex.exec(line)
     let inputMode = inputRegex.exec(line)
-    console.log(`cp750 status....max rules!
-                mute: ${muteState[2]}
-                fader: ${faderValue[2]}
-                input: ${inputMode[2]}`)
+    // if (muteState[2]) {
+    //     console.log(`cp750 status....max rules!
+    //                 mute: ${muteState[2]}
+    //                 fader: ${faderValue[2]}
+    //                 input: ${inputMode[2]}`)
+    // }
     
     io.sockets.emit('cp750 mute', {
         mute: muteState[2]
@@ -128,5 +130,5 @@ function getStates(setting) {
     setTimeout(() => {
         asciiToString(chunk)
         chunk = []
-    }, 200)
+    }, 100)
 }
